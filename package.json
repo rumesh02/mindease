@@ -1,0 +1,17 @@
+{
+  "name": "mindease-root",
+  "version": "1.0.0",
+  "description": "MindEase - Health & Wellness Mobile App",
+  "scripts": {
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm start",
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+  },
+  "keywords": ["wellness", "health", "react-native", "mobile-app"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
