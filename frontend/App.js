@@ -9,6 +9,18 @@ import { Provider } from 'react-redux';
 import store from './src/store';
 import AppNavigator from './src/navigation/AppNavigator';
 import { loadUserFromStorage } from './src/store/authSlice';
+import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
+
+function AppContent() {
+  const { isDarkMode } = useTheme();
+  
+  return (
+    <>
+      <StatusBar style={isDarkMode ? 'light' : 'auto'} />
+      <AppNavigator />
+    </>
+  );
+}
 
 export default function App() {
   useEffect(() => {
@@ -18,8 +30,9 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <StatusBar style="auto" />
-      <AppNavigator />
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
     </Provider>
   );
 }

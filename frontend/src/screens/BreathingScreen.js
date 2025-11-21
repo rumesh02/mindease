@@ -12,21 +12,47 @@ import {
   Animated,
   SafeAreaView,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../contexts/ThemeContext';
 
 const INHALE_DURATION = 5000; // 5 seconds
 const EXHALE_DURATION = 5000; // 5 seconds
 const HOLD_DURATION = 2000; // 2 seconds
+const STORAGE_KEY = '@breathing_records';
 
 export default function BreathingScreen() {
+  const { theme } = useTheme();
   const [isActive, setIsActive] = useState(false);
   const [phase, setPhase] = useState('ready'); // ready, inhale, hold, exhale
   const [countdown, setCountdown] = useState(5);
+  const [sessionStartTime, setSessionStartTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [records, setRecords] = useState([]);
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const opacityAnim = useRef(new Animated.Value(0.5)).current;
+
+  // Load records on mount
+  useEffect(() => {
+    loadRecords();
+  }, []);
+
+  // Timer effect
+  useEffect(() => {
+    let interval;
+    if (isActive && sessionStartTime) {
+      interval = setInterval(() => {
+        setElapsedTime(Math.floor((Date.now() - sessionStartTime) / 1000));
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isActive, sessionStartTime]);
 
   useEffect(() => {
     let interval;
@@ -140,8 +166,78 @@ export default function BreathingScreen() {
     }
   };
 
+  const loadRecords = async () => {
+    try {
+      const storedRecords = await AsyncStorage.getItem(STORAGE_KEY);
+      if (storedRecords) {
+        setRecords(JSON.parse(storedRecords));
+      }
+    } catch (error) {
+      console.error('Error loading records:', error);
+    }
+  };
+
+  const saveRecord = async (duration) => {
+    try {
+      const newRecord = {
+        id: Date.now().toString(),
+        duration,
+        date: new Date().toISOString(),
+      };
+      const updatedRecords = [newRecord, ...records].slice(0, 10); // Keep last 10 records
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedRecords));
+      setRecords(updatedRecords);
+    } catch (error) {
+      console.error('Error saving record:', error);
+    }
+  };
+
+  const handleStart = () => {
+    setIsActive(true);
+    setSessionStartTime(Date.now());
+    setElapsedTime(0);
+  };
+
+  const handleStop = () => {
+    setIsActive(false);
+    if (sessionStartTime) {
+      const duration = Math.floor((Date.now() - sessionStartTime) / 1000);
+      if (duration > 0) {
+        saveRecord(duration);
+        Alert.alert(
+          'Session Complete',
+          `Great job! You practiced for ${formatTime(duration)}.`,
+          [{ text: 'OK' }]
+        );
+      }
+    }
+    setSessionStartTime(null);
+    setElapsedTime(0);
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const formatDate = (isoDate) => {
+    const date = new Date(isoDate);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return 'Yesterday';
+    } else {
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <LinearGradient
         colors={['#14b8a6', '#06b6d4', '#0ea5e9']}
         start={{ x: 0, y: 0 }}
@@ -172,22 +268,28 @@ export default function BreathingScreen() {
         </Animated.View>
 
         <View style={styles.instructionContainer}>
-          <Text style={styles.phaseText}>{getPhaseText()}</Text>
-          <Text style={styles.instructionText}>{getPhaseInstruction()}</Text>
+          <Text style={[styles.phaseText, { color: theme.colors.text }]}>{getPhaseText()}</Text>
+          <Text style={[styles.instructionText, { color: theme.colors.textLight }]}>{getPhaseInstruction()}</Text>
+          {isActive && (
+            <View style={[styles.timerContainer, { backgroundColor: theme.colors.surface }]}>
+              <Feather name="clock" size={20} color="#14b8a6" />
+              <Text style={[styles.timerText, { color: theme.colors.text }]}>{formatTime(elapsedTime)}</Text>
+            </View>
+          )}
         </View>
       </View>
 
       <View style={styles.controls}>
         <TouchableOpacity
           style={[styles.button, isActive && styles.buttonActive]}
-          onPress={() => setIsActive(!isActive)}
+          onPress={isActive ? () => setIsActive(false) : handleStart}
         >
           <Feather name={isActive ? 'pause' : 'play'} size={24} color="#fff" />
           <Text style={styles.buttonText}>{isActive ? 'Pause' : 'Start'}</Text>
         </TouchableOpacity>
 
         {isActive && (
-          <TouchableOpacity style={styles.stopButton} onPress={() => setIsActive(false)}>
+          <TouchableOpacity style={styles.stopButton} onPress={handleStop}>
             <Feather name="square" size={20} color="#ef4444" />
             <Text style={styles.stopButtonText}>Stop</Text>
           </TouchableOpacity>
@@ -195,29 +297,52 @@ export default function BreathingScreen() {
       </View>
 
       <View style={styles.infoContainer}>
-        <View style={styles.infoCard}>
+        <View style={[styles.infoCard, { backgroundColor: theme.colors.surface }]}>
           <Feather name="info" size={20} color="#6366f1" />
-          <Text style={styles.infoText}>
+          <Text style={[styles.infoText, { color: theme.colors.textLight }]}>
             This exercise uses a 5-5-5 pattern: Inhale for 5 seconds, hold for 2, and exhale for 5
             seconds. Practice for at least 5 minutes daily for best results.
           </Text>
         </View>
 
-        <View style={styles.benefitsContainer}>
-          <Text style={styles.benefitsTitle}>Benefits:</Text>
+        <View style={[styles.benefitsContainer, { backgroundColor: theme.colors.surface }]}>
+          <Text style={[styles.benefitsTitle, { color: theme.colors.text }]}>Benefits:</Text>
           <View style={styles.benefit}>
             <Feather name="check" size={16} color="#10b981" />
-            <Text style={styles.benefitText}>Reduces stress and anxiety</Text>
+            <Text style={[styles.benefitText, { color: theme.colors.textLight }]}>Reduces stress and anxiety</Text>
           </View>
           <View style={styles.benefit}>
             <Feather name="check" size={16} color="#10b981" />
-            <Text style={styles.benefitText}>Lowers heart rate and blood pressure</Text>
+            <Text style={[styles.benefitText, { color: theme.colors.textLight }]}>Lowers heart rate and blood pressure</Text>
           </View>
           <View style={styles.benefit}>
             <Feather name="check" size={16} color="#10b981" />
-            <Text style={styles.benefitText}>Improves focus and mental clarity</Text>
+            <Text style={[styles.benefitText, { color: theme.colors.textLight }]}>Improves focus and mental clarity</Text>
           </View>
         </View>
+
+        {records.length > 0 && (
+          <View style={[styles.recordsContainer, { backgroundColor: theme.colors.surface }]}>
+            <View style={styles.recordsHeader}>
+              <Feather name="bar-chart" size={20} color="#14b8a6" />
+              <Text style={[styles.recordsTitle, { color: theme.colors.text }]}>Recent Sessions</Text>
+            </View>
+            {records.map((record) => (
+              <View key={record.id} style={[styles.recordItem, { borderBottomColor: theme.colors.border, backgroundColor: theme.colors.background }]}>
+                <View style={styles.recordLeft}>
+                  <Feather name="activity" size={18} color="#14b8a6" />
+                  <View style={styles.recordInfo}>
+                    <Text style={[styles.recordDuration, { color: theme.colors.text }]}>{formatTime(record.duration)}</Text>
+                    <Text style={[styles.recordDate, { color: theme.colors.textLight }]}>{formatDate(record.date)}</Text>
+                  </View>
+                </View>
+                <View style={styles.recordBadge}>
+                  <Text style={styles.recordBadgeText}>✓</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
       </View>
       </ScrollView>
     </SafeAreaView>
@@ -294,6 +419,27 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     textAlign: 'center',
     fontWeight: '500',
+  },
+  timerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+    backgroundColor: '#fff',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 30,
+    elevation: 3,
+    shadowColor: '#14b8a6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  timerText: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#14b8a6',
+    marginLeft: 10,
+    letterSpacing: 1,
   },
   controls: {
     paddingHorizontal: 24,
@@ -386,5 +532,70 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#4b5563',
     fontWeight: '600',
+  },
+  recordsContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 18,
+    marginTop: 20,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+  },
+  recordsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  recordsTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#111827',
+    marginLeft: 10,
+    letterSpacing: 0.3,
+  },
+  recordItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    backgroundColor: '#f9fafb',
+    borderRadius: 12,
+    marginBottom: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#14b8a6',
+  },
+  recordLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  recordInfo: {
+    marginLeft: 12,
+  },
+  recordDuration: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#111827',
+    marginBottom: 2,
+  },
+  recordDate: {
+    fontSize: 13,
+    color: '#6b7280',
+    fontWeight: '600',
+  },
+  recordBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#d1fae5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  recordBadgeText: {
+    fontSize: 16,
+    color: '#10b981',
   },
 });

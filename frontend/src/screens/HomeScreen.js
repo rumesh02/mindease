@@ -21,11 +21,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchTips, loadFavouritesFromStorage } from '../store/tipsSlice';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const { allTips, loading } = useSelector((state) => state.tips);
   const { user } = useSelector((state) => state.auth);
+  const { theme } = useTheme();
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -63,22 +65,22 @@ export default function HomeScreen({ navigation }) {
 
   const renderTipCard = ({ item }) => (
     <TouchableOpacity
-      style={styles.card}
+      style={[styles.card, { backgroundColor: theme.colors.surface }]}
       onPress={() => navigation.navigate('TipDetails', { tip: item })}
     >
       <Image source={{ uri: item.image }} style={styles.cardImage} />
       <View style={styles.cardContent}>
         <View style={styles.cardHeader}>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{item.category}</Text>
+          <View style={[styles.badge, { backgroundColor: theme.colors.badgeBackground }]}>
+            <Text style={[styles.badgeText, { color: theme.colors.badgeText }]}>{item.category}</Text>
           </View>
-          <View style={styles.duration}>
-            <Feather name="clock" size={12} color="#666" />
-            <Text style={styles.durationText}>{item.duration}</Text>
+          <View style={[styles.duration, { backgroundColor: theme.colors.background }]}>
+            <Feather name="clock" size={12} color={theme.colors.textLight} />
+            <Text style={[styles.durationText, { color: theme.colors.textLight }]}>{item.duration}</Text>
           </View>
         </View>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.cardDescription} numberOfLines={2}>
+        <Text style={[styles.cardTitle, { color: theme.colors.text }]}>{item.title}</Text>
+        <Text style={[styles.cardDescription, { color: theme.colors.textLight }]} numberOfLines={2}>
           {item.description}
         </Text>
         <View style={styles.cardFooter}>
@@ -94,16 +96,16 @@ export default function HomeScreen({ navigation }) {
 
   if (loading && allTips.length === 0) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={[styles.centerContainer, { backgroundColor: theme.colors.background }]}>
         <StatusBar barStyle="light-content" backgroundColor="#6366f1" />
         <ActivityIndicator size="large" color="#6366f1" />
-        <Text style={styles.loadingText}>Loading wellness tips...</Text>
+        <Text style={[styles.loadingText, { color: theme.colors.textLight }]}>Loading wellness tips...</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <StatusBar barStyle="light-content" backgroundColor="#6366f1" />
       <Animated.View style={[styles.headerContainer, { height: headerHeight }]}>
         <LinearGradient

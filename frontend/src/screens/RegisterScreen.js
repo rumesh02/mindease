@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { register, clearError } from '../store/authSlice';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Validation schema
 const registerSchema = Yup.object().shape({
@@ -37,6 +38,7 @@ const registerSchema = Yup.object().shape({
 export default function RegisterScreen({ navigation }) {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
+  const { theme } = useTheme();
 
   // Show error alert
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.flex}
@@ -65,8 +67,8 @@ export default function RegisterScreen({ navigation }) {
             >
               <Feather name="user-plus" size={50} color="#fff" />
             </LinearGradient>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Join MindEase today ✨</Text>
+            <Text style={[styles.title, { color: theme.colors.text }]}>Create Account</Text>
+            <Text style={[styles.subtitle, { color: theme.colors.textLight }]}>Join MindEase today ✨</Text>
           </View>
 
         <Formik
@@ -76,12 +78,12 @@ export default function RegisterScreen({ navigation }) {
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View style={styles.form}>
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, { backgroundColor: theme.colors.inputBackground, borderColor: theme.colors.border }]}>
                 <Feather name="user" size={20} color="#6366f1" style={styles.icon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: theme.colors.text }]}
                   placeholder="Username"
-                  placeholderTextColor="#999"
+                  placeholderTextColor={theme.colors.textLight}
                   onChangeText={handleChange('username')}
                   onBlur={handleBlur('username')}
                   value={values.username}
@@ -92,12 +94,12 @@ export default function RegisterScreen({ navigation }) {
                 <Text style={styles.errorText}>{errors.username}</Text>
               )}
 
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, { backgroundColor: theme.colors.inputBackground, borderColor: theme.colors.border }]}>
                 <Feather name="mail" size={20} color="#6366f1" style={styles.icon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: theme.colors.text }]}
                   placeholder="Email"
-                  placeholderTextColor="#999"
+                  placeholderTextColor={theme.colors.textLight}
                   onChangeText={handleChange('email')}
                   onBlur={handleBlur('email')}
                   value={values.email}
@@ -109,12 +111,12 @@ export default function RegisterScreen({ navigation }) {
                 <Text style={styles.errorText}>{errors.email}</Text>
               )}
 
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, { backgroundColor: theme.colors.inputBackground, borderColor: theme.colors.border }]}>
                 <Feather name="lock" size={20} color="#6366f1" style={styles.icon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: theme.colors.text }]}
                   placeholder="Password"
-                  placeholderTextColor="#999"
+                  placeholderTextColor={theme.colors.textLight}
                   onChangeText={handleChange('password')}
                   onBlur={handleBlur('password')}
                   value={values.password}
@@ -126,12 +128,12 @@ export default function RegisterScreen({ navigation }) {
                 <Text style={styles.errorText}>{errors.password}</Text>
               )}
 
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, { backgroundColor: theme.colors.inputBackground, borderColor: theme.colors.border }]}>
                 <Feather name="lock" size={20} color="#6366f1" style={styles.icon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: theme.colors.text }]}
                   placeholder="Confirm Password"
-                  placeholderTextColor="#999"
+                  placeholderTextColor={theme.colors.textLight}
                   onChangeText={handleChange('confirmPassword')}
                   onBlur={handleBlur('confirmPassword')}
                   value={values.confirmPassword}
@@ -156,7 +158,7 @@ export default function RegisterScreen({ navigation }) {
               </TouchableOpacity>
 
               <View style={styles.loginContainer}>
-                <Text style={styles.loginText}>Already have an account? </Text>
+                <Text style={[styles.loginText, { color: theme.colors.textLight }]}>Already have an account? </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                   <Text style={styles.loginLink}>Login</Text>
                 </TouchableOpacity>

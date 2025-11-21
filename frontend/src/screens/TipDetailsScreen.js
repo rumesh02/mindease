@@ -17,12 +17,14 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { addToFavourites, removeFromFavourites } from '../store/tipsSlice';
 import { Feather } from '@expo/vector-icons';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function TipDetailsScreen({ route }) {
   const { tip } = route.params;
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { favourites } = useSelector((state) => state.tips);
+  const { theme } = useTheme();
 
   const isFavourite = favourites.some((fav) => fav.id === tip.id);
 
@@ -37,21 +39,21 @@ export default function TipDetailsScreen({ route }) {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView style={styles.container}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.surface }]}>
+      <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
         <Image source={{ uri: tip.image }} style={styles.headerImage} />
 
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{tip.category}</Text>
+            <View style={[styles.badge, { backgroundColor: theme.colors.badgeBackground }]}>
+              <Text style={[styles.badgeText, { color: theme.colors.badgeText }]}>{tip.category}</Text>
             </View>
             <View style={styles.metaContainer}>
-              <Feather name="clock" size={14} color="#666" />
-              <Text style={styles.metaText}>{tip.duration}</Text>
-              <Feather name="activity" size={14} color="#666" style={styles.metaIcon} />
-              <Text style={styles.metaText}>{tip.difficulty}</Text>
+              <Feather name="clock" size={14} color={theme.colors.textLight} />
+              <Text style={[styles.metaText, { color: theme.colors.textLight }]}>{tip.duration}</Text>
+              <Feather name="activity" size={14} color={theme.colors.textLight} style={styles.metaIcon} />
+              <Text style={[styles.metaText, { color: theme.colors.textLight }]}>{tip.difficulty}</Text>
             </View>
           </View>
           <TouchableOpacity
@@ -67,13 +69,13 @@ export default function TipDetailsScreen({ route }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.title}>{tip.title}</Text>
-        <Text style={styles.description}>{tip.description}</Text>
+        <Text style={[styles.title, { color: theme.colors.text }]}>{tip.title}</Text>
+        <Text style={[styles.description, { color: theme.colors.textLight }]}>{tip.description}</Text>
 
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: theme.colors.border }]} />
 
-        <Text style={styles.sectionTitle}>Full Details</Text>
-        <Text style={styles.fullContent}>{tip.fullContent}</Text>
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Full Details</Text>
+        <Text style={[styles.fullContent, { color: theme.colors.textLight }]}>{tip.fullContent}</Text>
 
         <TouchableOpacity style={styles.actionButton}>
           <Feather name="check-circle" size={20} color="#fff" />

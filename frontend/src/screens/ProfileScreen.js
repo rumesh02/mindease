@@ -17,11 +17,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/authSlice';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { favourites } = useSelector((state) => state.tips);
+  const { theme, isDarkMode, toggleDarkMode } = useTheme();
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -49,7 +51,7 @@ export default function ProfileScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <ScrollView style={styles.scrollView}>
         <LinearGradient
           colors={['#6366f1', '#8b5cf6', '#a855f7']}
@@ -64,55 +66,61 @@ export default function ProfileScreen() {
           <Text style={styles.email}>{user?.email}</Text>
         </LinearGradient>
 
-      <View style={styles.statsContainer}>
+      <View style={[styles.statsContainer, { backgroundColor: theme.colors.surface }]}>
         <View style={styles.statBox}>
           <Feather name="heart" size={24} color="#6366f1" />
-          <Text style={styles.statNumber}>{favourites.length}</Text>
+          <Text style={[styles.statNumber, { color: theme.colors.text }]}>{favourites.length}</Text>
           <Text style={styles.statLabel}>Favourites</Text>
         </View>
-        <View style={styles.statDivider} />
+        <View style={[styles.statDivider, { backgroundColor: theme.colors.border }]} />
         <View style={styles.statBox}>
           <Feather name="activity" size={24} color="#10b981" />
-          <Text style={styles.statNumber}>0</Text>
+          <Text style={[styles.statNumber, { color: theme.colors.text }]}>0</Text>
           <Text style={styles.statLabel}>Completed</Text>
         </View>
-        <View style={styles.statDivider} />
+        <View style={[styles.statDivider, { backgroundColor: theme.colors.border }]} />
         <View style={styles.statBox}>
           <Feather name="award" size={24} color="#f59e0b" />
-          <Text style={styles.statNumber}>0</Text>
+          <Text style={[styles.statNumber, { color: theme.colors.text }]}>0</Text>
           <Text style={styles.statLabel}>Streak Days</Text>
         </View>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account</Text>
-        <View style={styles.menuContainer}>
-          <MenuItem icon="user" title="Edit Profile" />
-          <MenuItem icon="bell" title="Notifications" />
-          <MenuItem icon="lock" title="Privacy & Security" />
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Account</Text>
+        <View style={[styles.menuContainer, { backgroundColor: theme.colors.surface }]}>
+          <MenuItem icon="user" title="Edit Profile" color={theme.colors.text} />
+          <MenuItem icon="bell" title="Notifications" color={theme.colors.text} />
+          <MenuItem icon="lock" title="Privacy & Security" color={theme.colors.text} />
         </View>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Preferences</Text>
-        <View style={styles.menuContainer}>
-          <MenuItem icon="moon" title="Dark Mode" value="Off" />
-          <MenuItem icon="volume-2" title="Sound Effects" value="On" />
-          <MenuItem icon="globe" title="Language" value="English" />
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Preferences</Text>
+        <View style={[styles.menuContainer, { backgroundColor: theme.colors.surface }]}>
+          <MenuItem 
+            icon="moon" 
+            title="Dark Mode" 
+            value={isDarkMode ? "On" : "Off"}
+            onPress={toggleDarkMode}
+            color={theme.colors.text}
+          />
+          <MenuItem icon="volume-2" title="Sound Effects" value="On" color={theme.colors.text} />
+          <MenuItem icon="globe" title="Language" value="English" color={theme.colors.text} />
         </View>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Support</Text>
-        <View style={styles.menuContainer}>
-          <MenuItem icon="help-circle" title="Help & FAQ" />
-          <MenuItem icon="info" title="About MindEase" />
-          <MenuItem icon="mail" title="Contact Support" />
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Support</Text>
+        <View style={[styles.menuContainer, { backgroundColor: theme.colors.surface }]}>
+          <MenuItem icon="help-circle" title="Help & FAQ" color={theme.colors.text} />
+          <MenuItem icon="info" title="About MindEase" color={theme.colors.text} />
+          <MenuItem icon="mail" title="Contact Support" color={theme.colors.text} />
         </View>
       </View>
 
       <View style={styles.section}>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <TouchableOpacity style={[styles.logoutButton, { backgroundColor: theme.colors.surface, borderColor: theme.colors.accentRed + '40' }]} onPress={handleLogout}>
           <Feather name="log-out" size={20} color="#ef4444" />
           <Text style={styles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
@@ -221,7 +229,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 18,
     borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
+    borderBottomColor: 'rgba(0, 0, 0, 0.05)',
   },
   menuItemLeft: {
     flexDirection: 'row',

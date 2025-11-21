@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Import screens
 import LoginScreen from '../screens/LoginScreen';
@@ -83,6 +84,8 @@ function HomeStack() {
  * Bottom tabs for authenticated users
  */
 function MainTabs() {
+  const { theme } = useTheme();
+  
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -102,7 +105,14 @@ function MainTabs() {
           return <Feather name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#6366f1',
-        tabBarInactiveTintColor: 'gray',
+        tabBarInactiveTintColor: theme.colors.textLight,
+        tabBarStyle: {
+          backgroundColor: theme.colors.surface,
+          borderTopColor: theme.colors.border,
+        },
+        tabBarLabelStyle: {
+          fontWeight: '600',
+        },
         headerShown: false,
       })}
     >

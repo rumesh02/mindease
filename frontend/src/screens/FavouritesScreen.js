@@ -19,12 +19,14 @@ import { useNavigation } from '@react-navigation/native';
 import { removeFromFavourites } from '../store/tipsSlice';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function FavouritesScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { favourites } = useSelector((state) => state.tips);
   const { user } = useSelector((state) => state.auth);
+  const { theme } = useTheme();
 
   const handleRemoveFavourite = (tip) => {
     Alert.alert(
@@ -44,7 +46,7 @@ export default function FavouritesScreen() {
   };
 
   const renderFavouriteCard = ({ item }) => (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: theme.colors.surface }]}>
       <TouchableOpacity
         style={styles.cardContent}
         onPress={() => navigation.navigate('Home', {
@@ -54,20 +56,20 @@ export default function FavouritesScreen() {
       >
         <Image source={{ uri: item.image }} style={styles.cardImage} />
         <View style={styles.cardInfo}>
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{item.category}</Text>
+          <View style={[styles.badge, { backgroundColor: theme.colors.badgeBackground }]}>
+            <Text style={[styles.badgeText, { color: theme.colors.badgeText }]}>{item.category}</Text>
           </View>
-          <Text style={styles.cardTitle} numberOfLines={2}>
+          <Text style={[styles.cardTitle, { color: theme.colors.text }]} numberOfLines={2}>
             {item.title}
           </Text>
-          <Text style={styles.cardDescription} numberOfLines={2}>
+          <Text style={[styles.cardDescription, { color: theme.colors.textLight }]} numberOfLines={2}>
             {item.description}
           </Text>
           <View style={styles.metaContainer}>
-            <Feather name="clock" size={12} color="#666" />
-            <Text style={styles.metaText}>{item.duration}</Text>
-            <Feather name="activity" size={12} color="#666" style={styles.metaIcon} />
-            <Text style={styles.metaText}>{item.difficulty}</Text>
+            <Feather name="clock" size={12} color={theme.colors.textLight} />
+            <Text style={[styles.metaText, { color: theme.colors.textLight }]}>{item.duration}</Text>
+            <Feather name="activity" size={12} color={theme.colors.textLight} style={styles.metaIcon} />
+            <Text style={[styles.metaText, { color: theme.colors.textLight }]}>{item.difficulty}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -83,8 +85,8 @@ export default function FavouritesScreen() {
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       <Feather name="heart" size={80} color="#d1d5db" />
-      <Text style={styles.emptyTitle}>No Favourites Yet</Text>
-      <Text style={styles.emptyText}>
+      <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>No Favourites Yet</Text>
+      <Text style={[styles.emptyText, { color: theme.colors.textLight }]}>
         Start exploring wellness tips and save your favourites here
       </Text>
       <TouchableOpacity
@@ -97,7 +99,7 @@ export default function FavouritesScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <LinearGradient
         colors={['#ec4899', '#f43f5e', '#ef4444']}
         start={{ x: 0, y: 0 }}

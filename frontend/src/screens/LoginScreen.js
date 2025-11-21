@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login, clearError } from '../store/authSlice';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Validation schema
 const loginSchema = Yup.object().shape({
@@ -33,6 +34,7 @@ const loginSchema = Yup.object().shape({
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
+  const { theme } = useTheme();
 
   // Show error alert
   useEffect(() => {
@@ -47,7 +49,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.flex}
@@ -60,8 +62,8 @@ export default function LoginScreen({ navigation }) {
             >
               <Feather name="heart" size={50} color="#fff" />
             </LinearGradient>
-            <Text style={styles.title}>MindEase</Text>
-            <Text style={styles.subtitle}>Your wellness companion 🧘‍♀️</Text>
+            <Text style={[styles.title, { color: theme.colors.text }]}>MindEase</Text>
+            <Text style={[styles.subtitle, { color: theme.colors.textLight }]}>Your wellness companion 🧘‍♀️</Text>
           </View>
 
         <Formik
@@ -71,12 +73,12 @@ export default function LoginScreen({ navigation }) {
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View style={styles.form}>
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, { backgroundColor: theme.colors.inputBackground, borderColor: theme.colors.border }]}>
                 <Feather name="mail" size={20} color="#6366f1" style={styles.icon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: theme.colors.text }]}
                   placeholder="Email"
-                  placeholderTextColor="#999"
+                  placeholderTextColor={theme.colors.textLight}
                   onChangeText={handleChange('email')}
                   onBlur={handleBlur('email')}
                   value={values.email}
@@ -88,12 +90,12 @@ export default function LoginScreen({ navigation }) {
                 <Text style={styles.errorText}>{errors.email}</Text>
               )}
 
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, { backgroundColor: theme.colors.inputBackground, borderColor: theme.colors.border }]}>
                 <Feather name="lock" size={20} color="#6366f1" style={styles.icon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: theme.colors.text }]}
                   placeholder="Password"
-                  placeholderTextColor="#999"
+                  placeholderTextColor={theme.colors.textLight}
                   onChangeText={handleChange('password')}
                   onBlur={handleBlur('password')}
                   value={values.password}
@@ -118,7 +120,7 @@ export default function LoginScreen({ navigation }) {
               </TouchableOpacity>
 
               <View style={styles.registerContainer}>
-                <Text style={styles.registerText}>Don't have an account? </Text>
+                <Text style={[styles.registerText, { color: theme.colors.textLight }]}>Don't have an account? </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                   <Text style={styles.registerLink}>Register</Text>
                 </TouchableOpacity>
