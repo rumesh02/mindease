@@ -11,10 +11,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/authSlice';
 import { Feather } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
@@ -47,14 +49,20 @@ export default function ProfileScreen() {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.avatarContainer}>
-          <Feather name="user" size={50} color="#fff" />
-        </View>
-        <Text style={styles.username}>{user?.username}</Text>
-        <Text style={styles.email}>{user?.email}</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <LinearGradient
+          colors={['#6366f1', '#8b5cf6', '#a855f7']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.header}
+        >
+          <View style={styles.avatarContainer}>
+            <Feather name="user" size={50} color="#fff" />
+          </View>
+          <Text style={styles.username}>{user?.username} 👋</Text>
+          <Text style={styles.email}>{user?.email}</Text>
+        </LinearGradient>
 
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
@@ -112,51 +120,59 @@ export default function ProfileScreen() {
 
       <Text style={styles.version}>Version 1.0.0</Text>
     </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f3f4f6',
+  },
+  scrollView: {
+    flex: 1,
   },
   header: {
-    backgroundColor: '#6366f1',
-    padding: 30,
-    paddingTop: 60,
+    padding: 32,
     alignItems: 'center',
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
   },
   avatarContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 18,
+    borderWidth: 4,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   username: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 28,
+    fontWeight: '900',
     color: '#fff',
-    marginBottom: 5,
+    marginBottom: 6,
+    letterSpacing: 0.3,
   },
   email: {
-    fontSize: 14,
-    color: '#e0e7ff',
+    fontSize: 15,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '500',
   },
   statsContainer: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     marginHorizontal: 20,
-    marginTop: -30,
-    borderRadius: 12,
-    padding: 20,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    marginTop: -35,
+    borderRadius: 20,
+    padding: 24,
+    elevation: 6,
+    shadowColor: '#6366f1',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
   },
   statBox: {
     flex: 1,
@@ -167,72 +183,84 @@ const styles = StyleSheet.create({
     backgroundColor: '#e5e7eb',
   },
   statNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 8,
+    fontSize: 26,
+    fontWeight: '900',
+    color: '#111827',
+    marginTop: 10,
   },
   statLabel: {
     fontSize: 12,
-    color: '#666',
-    marginTop: 4,
+    color: '#6b7280',
+    marginTop: 6,
+    fontWeight: '600',
   },
   section: {
-    marginTop: 25,
+    marginTop: 28,
     paddingHorizontal: 20,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#111827',
+    marginBottom: 14,
+    letterSpacing: 0.3,
   },
   menuContainer: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 18,
     overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    padding: 18,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: '#f3f4f6',
   },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   menuItemTitle: {
-    fontSize: 15,
-    marginLeft: 15,
+    fontSize: 16,
+    marginLeft: 16,
+    fontWeight: '600',
   },
   menuItemValue: {
-    fontSize: 14,
-    color: '#999',
+    fontSize: 15,
+    color: '#9ca3af',
+    fontWeight: '600',
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#fee2e2',
+    padding: 18,
+    borderRadius: 18,
+    borderWidth: 2,
+    borderColor: '#fecaca',
+    elevation: 2,
   },
   logoutButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 17,
+    fontWeight: '800',
     color: '#ef4444',
     marginLeft: 10,
+    letterSpacing: 0.3,
   },
   version: {
     textAlign: 'center',
-    color: '#999',
-    fontSize: 12,
-    marginTop: 30,
-    marginBottom: 40,
+    color: '#9ca3af',
+    fontSize: 13,
+    marginTop: 32,
+    marginBottom: 48,
+    fontWeight: '600',
   },
 });

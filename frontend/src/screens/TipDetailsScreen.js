@@ -12,6 +12,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToFavourites, removeFromFavourites } from '../store/tipsSlice';
@@ -36,8 +37,9 @@ export default function TipDetailsScreen({ route }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Image source={{ uri: tip.image }} style={styles.headerImage} />
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        <Image source={{ uri: tip.image }} style={styles.headerImage} />
 
       <View style={styles.content}>
         <View style={styles.header}>
@@ -79,110 +81,133 @@ export default function TipDetailsScreen({ route }) {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
   headerImage: {
     width: '100%',
-    height: 250,
+    height: 280,
     backgroundColor: '#e5e7eb',
   },
   content: {
-    padding: 20,
+    padding: 24,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 15,
+    marginBottom: 18,
   },
   headerLeft: {
     flex: 1,
   },
   badge: {
-    backgroundColor: '#e0e7ff',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    backgroundColor: '#ede9fe',
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 14,
     alignSelf: 'flex-start',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   badgeText: {
-    color: '#6366f1',
-    fontSize: 12,
-    fontWeight: '600',
+    color: '#7c3aed',
+    fontSize: 13,
+    fontWeight: '700',
     textTransform: 'capitalize',
+    letterSpacing: 0.5,
   },
   metaContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   metaIcon: {
-    marginLeft: 15,
+    marginLeft: 16,
   },
   metaText: {
-    marginLeft: 5,
-    color: '#666',
-    fontSize: 13,
+    marginLeft: 6,
+    color: '#6b7280',
+    fontSize: 14,
     textTransform: 'capitalize',
+    fontWeight: '600',
   },
   favouriteButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#e0e7ff',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#ede9fe',
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#6366f1',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
   favouriteButtonActive: {
     backgroundColor: '#6366f1',
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
+    fontSize: 30,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 12,
+    lineHeight: 38,
+    letterSpacing: 0.3,
   },
   description: {
-    fontSize: 16,
-    color: '#666',
-    lineHeight: 24,
+    fontSize: 17,
+    color: '#6b7280',
+    lineHeight: 26,
+    fontWeight: '500',
   },
   divider: {
     height: 1,
     backgroundColor: '#e5e7eb',
-    marginVertical: 20,
+    marginVertical: 24,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#111827',
+    marginBottom: 14,
+    letterSpacing: 0.3,
   },
   fullContent: {
-    fontSize: 15,
-    color: '#555',
-    lineHeight: 24,
-    marginBottom: 25,
+    fontSize: 16,
+    color: '#4b5563',
+    lineHeight: 26,
+    marginBottom: 28,
+    fontWeight: '500',
   },
   actionButton: {
     backgroundColor: '#10b981',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 20,
+    padding: 18,
+    borderRadius: 16,
+    marginBottom: 24,
+    elevation: 4,
+    shadowColor: '#10b981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   actionButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
+    fontSize: 17,
+    fontWeight: '800',
+    marginLeft: 10,
+    letterSpacing: 0.5,
   },
 });

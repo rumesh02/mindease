@@ -12,11 +12,13 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { removeFromFavourites } from '../store/tipsSlice';
 import { Feather } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function FavouritesScreen() {
   const navigation = useNavigation();
@@ -95,13 +97,18 @@ export default function FavouritesScreen() {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>My Favourites</Text>
+    <SafeAreaView style={styles.container}>
+      <LinearGradient
+        colors={['#ec4899', '#f43f5e', '#ef4444']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <Text style={styles.title}>My Favourites ❤️</Text>
         <Text style={styles.subtitle}>
           {favourites.length} {favourites.length === 1 ? 'tip' : 'tips'} saved
         </Text>
-      </View>
+      </LinearGradient>
 
       <FlatList
         data={favourites}
@@ -114,109 +121,116 @@ export default function FavouritesScreen() {
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f3f4f6',
   },
   header: {
-    backgroundColor: '#6366f1',
-    padding: 20,
-    paddingTop: 60,
-    paddingBottom: 25,
+    padding: 24,
+    paddingBottom: 28,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '900',
     color: '#fff',
+    letterSpacing: 0.3,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#e0e7ff',
-    marginTop: 5,
+    fontSize: 15,
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginTop: 6,
+    fontWeight: '500',
   },
   listContainer: {
-    padding: 15,
+    padding: 18,
+    paddingTop: 20,
   },
   listContainerEmpty: {
     flex: 1,
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 15,
+    borderRadius: 18,
+    marginBottom: 16,
     overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    elevation: 3,
+    shadowColor: '#ec4899',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
   },
   cardContent: {
     flexDirection: 'row',
-    padding: 12,
+    padding: 14,
   },
   cardImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
+    width: 110,
+    height: 110,
+    borderRadius: 12,
     backgroundColor: '#e5e7eb',
   },
   cardInfo: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: 14,
     justifyContent: 'space-between',
   },
   badge: {
-    backgroundColor: '#e0e7ff',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
+    backgroundColor: '#fce7f3',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 12,
     alignSelf: 'flex-start',
   },
   badgeText: {
-    color: '#6366f1',
-    fontSize: 10,
-    fontWeight: '600',
+    color: '#ec4899',
+    fontSize: 11,
+    fontWeight: '700',
     textTransform: 'capitalize',
+    letterSpacing: 0.5,
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#111827',
+    lineHeight: 22,
   },
   cardDescription: {
-    fontSize: 13,
-    color: '#666',
-    lineHeight: 18,
+    fontSize: 14,
+    color: '#6b7280',
+    lineHeight: 19,
   },
   metaContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   metaIcon: {
-    marginLeft: 10,
+    marginLeft: 12,
   },
   metaText: {
-    marginLeft: 4,
-    color: '#666',
-    fontSize: 11,
+    marginLeft: 5,
+    color: '#6b7280',
+    fontSize: 12,
     textTransform: 'capitalize',
+    fontWeight: '600',
   },
   removeButton: {
     position: 'absolute',
-    top: 8,
-    right: 8,
+    top: 10,
+    right: 10,
     backgroundColor: '#fee2e2',
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 2,
   },
   emptyContainer: {
     flex: 1,
@@ -225,28 +239,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   emptyTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 20,
-    marginBottom: 10,
+    fontSize: 26,
+    fontWeight: '900',
+    color: '#111827',
+    marginTop: 24,
+    marginBottom: 12,
   },
   emptyText: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 15,
+    color: '#6b7280',
     textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 30,
+    lineHeight: 24,
+    marginBottom: 32,
+    fontWeight: '500',
   },
   exploreButton: {
-    backgroundColor: '#6366f1',
-    paddingHorizontal: 30,
-    paddingVertical: 14,
-    borderRadius: 10,
+    backgroundColor: '#ec4899',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 16,
+    elevation: 4,
+    shadowColor: '#ec4899',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   exploreButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 17,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
 });

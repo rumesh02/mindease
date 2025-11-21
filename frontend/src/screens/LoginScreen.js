@@ -15,12 +15,14 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, clearError } from '../store/authSlice';
 import { Feather } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 // Validation schema
 const loginSchema = Yup.object().shape({
@@ -45,16 +47,22 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.header}>
-          <Feather name="heart" size={60} color="#6366f1" />
-          <Text style={styles.title}>MindEase</Text>
-          <Text style={styles.subtitle}>Your wellness companion</Text>
-        </View>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.flex}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.header}>
+            <LinearGradient
+              colors={['#6366f1', '#8b5cf6']}
+              style={styles.iconContainer}
+            >
+              <Feather name="heart" size={50} color="#fff" />
+            </LinearGradient>
+            <Text style={styles.title}>MindEase</Text>
+            <Text style={styles.subtitle}>Your wellness companion 🧘‍♀️</Text>
+          </View>
 
         <Formik
           initialValues={{ email: '', password: '' }}
@@ -120,6 +128,7 @@ export default function LoginScreen({ navigation }) {
         </Formik>
       </ScrollView>
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -128,25 +137,42 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  flex: {
+    flex: 1,
+  },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: 24,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 48,
+  },
+  iconContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#6366f1',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 20,
+    fontSize: 36,
+    fontWeight: '900',
+    color: '#111827',
+    marginTop: 24,
+    letterSpacing: 0.5,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 8,
+    fontSize: 17,
+    color: '#6b7280',
+    marginTop: 10,
+    fontWeight: '500',
   },
   form: {
     width: '100%',
@@ -154,51 +180,62 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    marginBottom: 8,
-    paddingHorizontal: 15,
+    backgroundColor: '#f9fafb',
+    borderRadius: 16,
+    marginBottom: 10,
+    paddingHorizontal: 18,
+    borderWidth: 2,
+    borderColor: '#f3f4f6',
   },
   icon: {
-    marginRight: 10,
+    marginRight: 12,
   },
   input: {
     flex: 1,
-    height: 50,
+    height: 56,
     fontSize: 16,
-    color: '#333',
+    color: '#111827',
+    fontWeight: '500',
   },
   errorText: {
     color: '#ef4444',
-    fontSize: 12,
-    marginBottom: 10,
-    marginLeft: 5,
+    fontSize: 13,
+    marginBottom: 12,
+    marginLeft: 6,
+    fontWeight: '600',
   },
   loginButton: {
     backgroundColor: '#6366f1',
-    borderRadius: 10,
-    height: 50,
+    borderRadius: 16,
+    height: 56,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 24,
+    elevation: 4,
+    shadowColor: '#6366f1',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   loginButtonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
   registerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 24,
   },
   registerText: {
-    color: '#666',
-    fontSize: 14,
+    color: '#6b7280',
+    fontSize: 15,
+    fontWeight: '500',
   },
   registerLink: {
     color: '#6366f1',
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 15,
+    fontWeight: '800',
   },
 });

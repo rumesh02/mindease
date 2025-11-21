@@ -49,11 +49,16 @@ function HomeStack() {
       screenOptions={{
         headerStyle: {
           backgroundColor: '#6366f1',
+          elevation: 0,
+          shadowOpacity: 0,
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
-          fontWeight: 'bold',
+          fontWeight: '900',
+          fontSize: 24,
+          letterSpacing: 0.5,
         },
+        headerShown: false,
       }}
     >
       <Stack.Screen 
@@ -64,7 +69,10 @@ function HomeStack() {
       <Stack.Screen 
         name="TipDetails" 
         component={TipDetailsScreen}
-        options={{ title: 'Tip Details' }}
+        options={{ 
+          title: 'Tip Details',
+          headerShown: true,
+        }}
       />
     </Stack.Navigator>
   );

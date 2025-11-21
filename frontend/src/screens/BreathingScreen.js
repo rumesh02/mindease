@@ -10,8 +10,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const INHALE_DURATION = 5000; // 5 seconds
 const EXHALE_DURATION = 5000; // 5 seconds
@@ -138,13 +141,22 @@ export default function BreathingScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Breathing Exercise</Text>
+    <SafeAreaView style={styles.container}>
+      <LinearGradient
+        colors={['#14b8a6', '#06b6d4', '#0ea5e9']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <Text style={styles.title}>Breathing Exercise 🌬️</Text>
         <Text style={styles.subtitle}>Find your calm with guided breathing</Text>
-      </View>
+      </LinearGradient>
 
-      <View style={styles.breathingContainer}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.breathingContainer}>
         <Animated.View
           style={[
             styles.circle,
@@ -207,142 +219,172 @@ export default function BreathingScreen() {
           </View>
         </View>
       </View>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f3f4f6',
   },
   header: {
-    backgroundColor: '#6366f1',
-    padding: 20,
-    paddingTop: 60,
-    paddingBottom: 30,
+    padding: 24,
+    paddingBottom: 28,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '900',
     color: '#fff',
-    marginBottom: 5,
+    letterSpacing: 0.3,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#e0e7ff',
+    fontSize: 15,
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginTop: 6,
+    fontWeight: '500',
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   breathingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     paddingVertical: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 400,
   },
   circle: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: '#6366f1',
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: '#14b8a6',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 48,
+    elevation: 12,
+    shadowColor: '#14b8a6',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
   },
   circleInner: {
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   instructionContainer: {
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
   },
   phaseText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
+    fontSize: 36,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 12,
+    letterSpacing: 0.5,
   },
   instructionText: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 17,
+    color: '#6b7280',
     textAlign: 'center',
+    fontWeight: '500',
   },
   controls: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
   },
   button: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#14b8a6',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 18,
-    borderRadius: 12,
-    marginBottom: 10,
+    padding: 20,
+    borderRadius: 18,
+    marginBottom: 12,
+    elevation: 4,
+    shadowColor: '#14b8a6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   buttonActive: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: '#0d9488',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 8,
+    fontSize: 19,
+    fontWeight: '800',
+    marginLeft: 10,
+    letterSpacing: 0.5,
   },
   stopButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 12,
-    borderRadius: 12,
+    padding: 14,
+    borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#ef4444',
+    borderColor: '#fecaca',
+    backgroundColor: '#fff',
   },
   stopButtonText: {
     color: '#ef4444',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 8,
+    fontSize: 17,
+    fontWeight: '800',
+    marginLeft: 10,
+    letterSpacing: 0.3,
   },
   infoContainer: {
-    padding: 20,
+    padding: 24,
   },
   infoCard: {
-    backgroundColor: '#e0e7ff',
-    padding: 15,
-    borderRadius: 12,
+    backgroundColor: '#dbeafe',
+    padding: 18,
+    borderRadius: 18,
     flexDirection: 'row',
     marginBottom: 20,
+    elevation: 2,
   },
   infoText: {
     flex: 1,
-    marginLeft: 12,
-    fontSize: 13,
-    color: '#4338ca',
-    lineHeight: 20,
+    marginLeft: 14,
+    fontSize: 14,
+    color: '#1e40af',
+    lineHeight: 22,
+    fontWeight: '600',
   },
   benefitsContainer: {
     backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 12,
+    padding: 20,
+    borderRadius: 18,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
   },
   benefitsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#111827',
+    marginBottom: 16,
+    letterSpacing: 0.3,
   },
   benefit: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   benefitText: {
-    marginLeft: 10,
-    fontSize: 14,
-    color: '#666',
+    marginLeft: 12,
+    fontSize: 15,
+    color: '#4b5563',
+    fontWeight: '600',
   },
 });
