@@ -22,8 +22,12 @@ import { useTheme } from '../contexts/ThemeContext';
 export default function ProfileScreen() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { favourites } = useSelector((state) => state.tips);
+  const { favourites, completions } = useSelector((state) => state.tips);
   const { theme, isDarkMode, toggleDarkMode } = useTheme();
+
+  // Calculate completed tips for today
+  const today = new Date().toDateString();
+  const completedToday = Object.values(completions).filter(date => date === today).length;
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -75,7 +79,9 @@ export default function ProfileScreen() {
         <View style={[styles.statDivider, { backgroundColor: theme.colors.border }]} />
         <View style={styles.statBox}>
           <Feather name="activity" size={24} color="#10b981" />
-          <Text style={[styles.statNumber, { color: theme.colors.text }]}>0</Text>
+          <Text style={[styles.statNumber, { color: theme.colors.text }]}>
+            {completedToday}
+          </Text>
           <Text style={styles.statLabel}>Completed</Text>
         </View>
         <View style={[styles.statDivider, { backgroundColor: theme.colors.border }]} />

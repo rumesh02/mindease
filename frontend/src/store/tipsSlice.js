@@ -14,6 +14,7 @@ import {
 } from '../services/api';
 
 const FAVOURITES_KEY = 'mindease_favourites';
+const COMPLETIONS_KEY = 'mindease_completions';
 
 // Load favourites from AsyncStorage
 export const loadFavouritesFromStorage = createAsyncThunk(
@@ -25,6 +26,20 @@ export const loadFavouritesFromStorage = createAsyncThunk(
     } catch (error) {
       console.error('Error loading favourites:', error);
       return [];
+    }
+  }
+);
+
+// Load completions from AsyncStorage
+export const loadCompletionsFromStorage = createAsyncThunk(
+  'tips/loadCompletionsFromStorage',
+  async () => {
+    try {
+      const completionsData = await AsyncStorage.getItem(COMPLETIONS_KEY);
+      return completionsData ? JSON.parse(completionsData) : {};
+    } catch (error) {
+      console.error('Error loading completions:', error);
+      return {};
     }
   }
 );
@@ -97,12 +112,38 @@ export const removeFromFavourites = createAsyncThunk(
   }
 );
 
+// Toggle tip completion
+export const toggleTipCompletion = createAsyncThunk(
+  'tips/toggleTipCompletion',
+  async ({ tipId }, { getState, rejectWithValue }) => {
+    try {
+      const { tips } = getState();
+      const today = new Date().toDateString();
+      const updatedCompletions = { ...tips.completions };
+      
+      if (updatedCompletions[tipId] === today) {
+        // Already completed today, so mark as not completed
+        delete updatedCompletions[tipId];
+      } else {
+        // Mark as completed today
+        updatedCompletions[tipId] = today;
+      }
+      
+      await AsyncStorage.setItem(COMPLETIONS_KEY, JSON.stringify(updatedCompletions));
+      return updatedCompletions;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to toggle completion');
+    }
+  }
+);
+
 const tipsSlice = createSlice({
   name: 'tips',
   initialState: {
     allTips: [],
     currentTip: null,
     favourites: [],
+    completions: {}, // { tipId: dateString }
     loading: false,
     error: null,
   },
@@ -119,6 +160,14 @@ const tipsSlice = createSlice({
       // Load favourites from storage
       .addCase(loadFavouritesFromStorage.fulfilled, (state, action) => {
         state.favourites = action.payload;
+      })
+      // Load completions from storage
+      .addCase(loadCompletionsFromStorage.fulfilled, (state, action) => {
+        state.completions = action.payload;
+      })
+      // Toggle tip completion
+      .addCase(toggleTipCompletion.fulfilled, (state, action) => {
+        state.completions = action.payload;
       })
       // Fetch tips
       .addCase(fetchTips.pending, (state) => {
