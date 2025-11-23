@@ -19,6 +19,7 @@ import TipDetailsScreen from '../screens/TipDetailsScreen';
 import BreathingScreen from '../screens/BreathingScreen';
 import FavouritesScreen from '../screens/FavouritesScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
 import NutritionScreen from '../screens/NutritionScreen';
 
 const Stack = createStackNavigator();
@@ -81,6 +82,29 @@ function HomeStack() {
 }
 
 /**
+ * Profile Stack Navigator
+ * Nested stack for profile-related screens
+ */
+function ProfileStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen 
+        name="ProfileMain" 
+        component={ProfileScreen}
+      />
+      <Stack.Screen 
+        name="EditProfile" 
+        component={EditProfileScreen}
+      />
+    </Stack.Navigator>
+  );
+}
+
+/**
  * Main Tab Navigator
  * Bottom tabs for authenticated users
  */
@@ -123,7 +147,7 @@ function MainTabs() {
       <Tab.Screen name="Nutrition" component={NutritionScreen} />
       <Tab.Screen name="Breathing" component={BreathingScreen} />
       <Tab.Screen name="Favourites" component={FavouritesScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 }

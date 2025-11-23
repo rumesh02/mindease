@@ -19,7 +19,7 @@ import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../contexts/ThemeContext';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { favourites, completions } = useSelector((state) => state.tips);
@@ -95,7 +95,12 @@ export default function ProfileScreen() {
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Account</Text>
         <View style={[styles.menuContainer, { backgroundColor: theme.colors.surface }]}>
-          <MenuItem icon="user" title="Edit Profile" color={theme.colors.text} />
+          <MenuItem 
+            icon="user" 
+            title="Edit Profile" 
+            color={theme.colors.text}
+            onPress={() => navigation.navigate('EditProfile')}
+          />
           <MenuItem icon="bell" title="Notifications" color={theme.colors.text} />
           <MenuItem icon="lock" title="Privacy & Security" color={theme.colors.text} />
         </View>
