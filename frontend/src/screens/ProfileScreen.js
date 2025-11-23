@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     marginHorizontal: 20,
-    marginTop: -35,
+    marginTop: 20,
     borderRadius: 20,
     padding: 24,
     elevation: 6,
