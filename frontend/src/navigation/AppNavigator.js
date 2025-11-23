@@ -19,6 +19,7 @@ import TipDetailsScreen from '../screens/TipDetailsScreen';
 import BreathingScreen from '../screens/BreathingScreen';
 import FavouritesScreen from '../screens/FavouritesScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import NutritionScreen from '../screens/NutritionScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -94,6 +95,8 @@ function MainTabs() {
 
           if (route.name === 'Home') {
             iconName = 'home';
+          } else if (route.name === 'Nutrition') {
+            iconName = 'pie-chart';
           } else if (route.name === 'Breathing') {
             iconName = 'wind';
           } else if (route.name === 'Favourites') {
@@ -117,6 +120,7 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Nutrition" component={NutritionScreen} />
       <Tab.Screen name="Breathing" component={BreathingScreen} />
       <Tab.Screen name="Favourites" component={FavouritesScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
