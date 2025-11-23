@@ -18,7 +18,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTips, loadFavouritesFromStorage } from '../store/tipsSlice';
+import { fetchTips, loadFavouritesFromStorage, loadCompletionsFromStorage } from '../store/tipsSlice';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../contexts/ThemeContext';
@@ -33,6 +33,7 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     dispatch(fetchTips());
     dispatch(loadFavouritesFromStorage());
+    dispatch(loadCompletionsFromStorage());
   }, []);
 
   const handleRefresh = () => {

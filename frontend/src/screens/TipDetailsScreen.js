@@ -3,7 +3,7 @@
  * Shows full details of a wellness tip with favourite functionality
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToFavourites, removeFromFavourites } from '../store/tipsSlice';
+import { addToFavourites, removeFromFavourites, toggleTipCompletion } from '../store/tipsSlice';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -23,10 +23,14 @@ export default function TipDetailsScreen({ route }) {
   const { tip } = route.params;
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { favourites } = useSelector((state) => state.tips);
+  const { favourites, completions } = useSelector((state) => state.tips);
   const { theme } = useTheme();
 
   const isFavourite = favourites.some((fav) => fav.id === tip.id);
+  
+  // Check if tip is completed today
+  const today = new Date().toDateString();
+  const isCompletedToday = completions[tip.id] === today;
 
   const handleToggleFavourite = () => {
     if (isFavourite) {
@@ -35,6 +39,13 @@ export default function TipDetailsScreen({ route }) {
     } else {
       dispatch(addToFavourites({ userId: user.id, tipId: tip.id, tipData: tip }));
       Alert.alert('Added', 'Added to favourites');
+    }
+  };
+
+  const handleToggleCompletion = () => {
+    dispatch(toggleTipCompletion({ tipId: tip.id }));
+    if (!isCompletedToday) {
+      Alert.alert('Completed', 'Great job! You\'ve completed this tip for today!');
     }
   };
 
@@ -77,9 +88,21 @@ export default function TipDetailsScreen({ route }) {
         <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Full Details</Text>
         <Text style={[styles.fullContent, { color: theme.colors.textLight }]}>{tip.fullContent}</Text>
 
-        <TouchableOpacity style={styles.actionButton}>
-          <Feather name="check-circle" size={20} color="#fff" />
-          <Text style={styles.actionButtonText}>Mark as Completed</Text>
+        <TouchableOpacity 
+          style={[
+            styles.actionButton, 
+            isCompletedToday && styles.actionButtonCompleted
+          ]}
+          onPress={handleToggleCompletion}
+        >
+          <Feather 
+            name={isCompletedToday ? "check-circle" : "circle"} 
+            size={20} 
+            color="#fff" 
+          />
+          <Text style={styles.actionButtonText}>
+            {isCompletedToday ? 'Completed Today' : 'Mark as Completed'}
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -204,6 +227,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+  },
+  actionButtonCompleted: {
+    backgroundColor: '#6b7280',
+    shadowColor: '#6b7280',
   },
   actionButtonText: {
     color: '#fff',
