@@ -5,7 +5,7 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { login as apiLogin, register as apiRegister } from '../services/api';
+import { login as apiLogin, register as apiRegister, updateUserProfile } from '../services/api';
 
 // Async thunk to load user from AsyncStorage on app start
 export const loadUserFromStorage = createAsyncThunk(
@@ -71,6 +71,26 @@ export const logout = createAsyncThunk('auth/logout', async () => {
   await AsyncStorage.removeItem('userData');
 });
 
+// Async thunk for updating profile
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (updateData, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      const userId = auth.user?.id;
+      
+      if (!userId) {
+        throw new Error('User not authenticated');
+      }
+      
+      const response = await updateUserProfile(userId, updateData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to update profile');
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
@@ -133,6 +153,20 @@ const authSlice = createSlice({
         state.token = null;
         state.isAuthenticated = false;
         state.error = null;
+      })
+      // Update profile cases
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.error = null;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

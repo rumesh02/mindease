@@ -158,6 +158,66 @@ export const login = async (email, password) => {
   }
 };
 
+export const updateUserProfile = async (userId, updateData) => {
+  await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+  
+  try {
+    const usersData = await AsyncStorage.getItem('mindease_users');
+    const users = usersData ? JSON.parse(usersData) : [];
+    
+    const userIndex = users.findIndex(u => u.id === userId);
+    
+    if (userIndex === -1) {
+      throw new Error('User not found');
+    }
+    
+    const user = users[userIndex];
+    
+    // If updating password, verify current password
+    if (updateData.newPassword) {
+      if (user.password !== updateData.currentPassword) {
+        throw new Error('Current password is incorrect');
+      }
+      user.password = updateData.newPassword;
+    }
+    
+    // Check if email is being changed and if it's already in use
+    if (updateData.email && updateData.email !== user.email) {
+      const emailExists = users.some(u => u.id !== userId && u.email === updateData.email);
+      if (emailExists) {
+        throw new Error('Email is already in use');
+      }
+      user.email = updateData.email;
+    }
+    
+    // Update username
+    if (updateData.username) {
+      user.username = updateData.username;
+    }
+    
+    // Save updated users
+    users[userIndex] = user;
+    await AsyncStorage.setItem('mindease_users', JSON.stringify(users));
+    
+    // Update stored user data for current session
+    const userData = {
+      id: user.id,
+      username: user.username,
+      email: user.email
+    };
+    await AsyncStorage.setItem('userData', JSON.stringify(userData));
+    
+    return {
+      success: true,
+      message: 'Profile updated successfully',
+      user: userData,
+      token: `local_token_${user.id}`
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
 // ========================================
 // Tips (Local Data)
 // ========================================
