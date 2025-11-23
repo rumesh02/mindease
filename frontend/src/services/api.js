@@ -240,4 +240,42 @@ export const removeFavourite = async (favouriteId, userId) => {
   };
 };
 
-export default { register, login, fetchTips, fetchTipById, fetchDailyTip, fetchUserFavourites, addFavourite, removeFavourite };
+/**
+ * Public API for nutritional data
+ */
+export const fetchNutritionInfo = async (query) => {
+  try {
+    const apiKey = '3Fk9BORlRNAxZ3L6GOsTzA==cIXM11mP6HYA7UNC'; // API key from api-ninjas.com
+    const response = await fetch(
+      `https://api.api-ninjas.com/v1/nutrition?query=${encodeURIComponent(query)}`,
+      {
+        method: 'GET',
+        headers: {
+          'X-Api-Key': apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch nutrition data');
+    }
+
+    const data = await response.json();
+    
+    return {
+      success: true,
+      data: data,
+      count: data.length
+    };
+  } catch (error) {
+    console.error('Nutrition API Error:', error);
+    return {
+      success: false,
+      error: error.message,
+      data: []
+    };
+  }
+};
+
+export default { register, login, fetchTips, fetchTipById, fetchDailyTip, fetchUserFavourites, addFavourite, removeFavourite, fetchNutritionInfo };
